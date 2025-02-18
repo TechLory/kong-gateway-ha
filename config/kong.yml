@@ -1,0 +1,79 @@
+_format_version: "2.1"
+
+upstreams:
+  - name: service1-upstream
+    targets:
+      - target: service1-1:3001
+        weight: 33
+      - target: service1-2:3001
+        weight: 33
+      - target: service1-3:3001
+        weight: 33
+    healthchecks:
+      active:
+        type: http
+        http_path: "/health"
+        healthy:
+          interval: 2
+          successes: 1
+        unhealthy:
+          interval: 2
+          http_failures: 1  
+          tcp_failures: 1
+          timeouts: 1
+      passive:
+        healthy:
+          successes: 1
+        unhealthy:
+          http_failures: 1
+          timeouts: 1
+
+services:
+  - name: service1
+    url: http://service1-upstream
+    connect_timeout: 1000
+    read_timeout: 1000   
+    write_timeout: 1000  
+    routes:
+      - name: service1-route
+        paths:
+          - /service1
+
+  - name: service2
+    url: http://service2-1:3002
+    routes:
+      - name: service2-route
+        paths:
+          - /service2
+
+  - name: service3
+    url: http://service3-1:3003
+    routes:
+      - name: service3-route
+        paths:
+          - /service3
+
+consumers:
+- username: user1
+- username: user2
+
+basicauth_credentials:
+- consumer: user1
+  username: Mario
+  password: arancia
+- consumer: user2
+  username: Luigi
+  password: limone
+
+
+
+plugins:
+- name: basic-auth
+  service: service2
+  config:
+    hide_credentials: true
+- name: rate-limiting
+  service: service3
+  config:
+    minute: 15
+    policy: local
