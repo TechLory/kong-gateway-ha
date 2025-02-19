@@ -55,6 +55,8 @@ services:
 
 consumers:
 - username: user1
+  keyauth_credentials:
+  - key: custom_key
 - username: user2
 
 basicauth_credentials:
@@ -77,3 +79,8 @@ plugins:
   config:
     minute: 15
     policy: local
+- name: key-auth
+  service: service2
+  config:
+    key_names:
+    - apikey
