@@ -50,7 +50,7 @@ This project shows how to set up a highly available API gateway using Kong Gatew
   ```
   docker-compose logs [service_name]
   ```
-
+- If the generation of the certificates failed check the script for possible issues depending on the environment.
 ---
 
 For any questions or issues, please open an issue in the GitHub repository.
